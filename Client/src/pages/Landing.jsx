@@ -87,15 +87,15 @@ const Landing = () => {
               <>
                 <Link
                   to="/login"
-                  className="px-4 py-2 text-xs font-semibold text-slate-550 hover:text-slate-900 transition-colors"
+                  className="px-4 py-2 text-xs font-semibold text-slate-550 hover:text-slate-900 transition-colors hidden sm:inline-block"
                 >
-                  Create Link
+                  Sign In
                 </Link>
                 <Link
                   to="/register"
                   className="px-4 py-2 text-xs font-semibold bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-all shadow-sm"
                 >
-                  Dashboard
+                  Get Started
                 </Link>
               </>
             )}
@@ -121,9 +121,10 @@ const Landing = () => {
         {/* Hero Title */}
         <motion.h1 
           variants={itemVariants}
-          className="text-3xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.1] max-w-3xl mb-6"
+          className="text-2xl sm:text-4xl md:text-5xl lg:text-6xl font-extrabold text-slate-900 tracking-tight leading-[1.15] max-w-3xl mb-6"
         >
-          Transform Long Urls, into <br />
+          Transform Long Urls, <br className="hidden sm:inline" />
+          into{' '}
           <span className="text-slate-900 underline decoration-slate-350 decoration-wavy underline-offset-8">
             Tiny Links Instantly!
           </span>
@@ -142,9 +143,9 @@ const Landing = () => {
         <motion.form 
           variants={itemVariants}
           onSubmit={handleMockShorten} 
-          className="w-full max-w-xl bg-white border border-slate-200 shadow-sm p-1.5 rounded-2xl flex items-center justify-between mb-6 group focus-within:border-slate-400 transition-colors"
+          className="w-full max-w-xl bg-white border border-slate-200 shadow-sm p-2 sm:p-1.5 rounded-2xl flex flex-col sm:flex-row items-stretch sm:items-center justify-between mb-6 group focus-within:border-slate-400 transition-colors gap-2 sm:gap-0"
         >
-          <div className="flex items-center gap-3 pl-3 flex-1 min-w-0">
+          <div className="flex items-center gap-3 pl-3 py-2 sm:py-0 flex-1 min-w-0 bg-slate-50/50 sm:bg-transparent rounded-xl sm:rounded-none">
             <FiLink className="w-4 h-4 text-slate-400 shrink-0" />
             <input
               type="text"
@@ -156,9 +157,9 @@ const Landing = () => {
           </div>
           <button
             type="submit"
-            className="px-4 py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shadow-sm shrink-0 transition-all hover:scale-[1.01]"
+            className="px-4 py-3 sm:py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shadow-sm shrink-0 transition-all hover:scale-[1.01] text-center"
           >
-            Generate Link <span className="text-slate-450 font-normal">· it's free</span>
+            Generate Link <span className="text-slate-450 font-normal hidden sm:inline">· it's free</span>
           </button>
         </motion.form>
 
