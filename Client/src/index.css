@@ -1,0 +1,76 @@
+@import "tailwindcss";
+
+html {
+  scroll-behavior: smooth;
+}
+
+@theme {
+  --color-bg-dark: #F8FAFC;
+  --color-surface-dark: #FFFFFF;
+  --color-primary-purple: #7C3AED;
+  --color-secondary-cyan: #06B6D4;
+  --color-accent-pink: #EC4899;
+  --color-success-green: #10B981;
+  --color-warning-orange: #F59E0B;
+  --color-danger-red: #EF4444;
+  --color-text-primary: #0F172A;
+  --color-text-secondary: #64748B;
+  --color-border-glass: rgba(0, 0, 0, 0.06);
+}
+
+/* Custom Scrollbars for light theme */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: transparent;
+}
+::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.1);
+  border-radius: 99px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.2);
+}
+
+/* Custom transitions and panel defaults matching Cemdash */
+.glass-panel {
+  background: #FFFFFF;
+  border: 1px solid #E2E8F0;
+  box-shadow: 0 1px 3px 0 rgba(0, 0, 0, 0.05), 0 1px 2px -1px rgba(0, 0, 0, 0.05);
+}
+
+/* Subtle background animations */
+@keyframes orb-float-one {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(50px, -50px) scale(1.15);
+  }
+}
+
+@keyframes orb-float-two {
+  0%, 100% {
+    transform: translate(0, 0) scale(1);
+  }
+  50% {
+    transform: translate(-60px, 30px) scale(0.9);
+  }
+}
+
+.animate-orb-1 {
+  animation: orb-float-one 20s infinite ease-in-out;
+}
+
+.animate-orb-2 {
+  animation: orb-float-two 25s infinite ease-in-out;
+}
+
+body {
+  background-color: #F8FAFC;
+  color: #0F172A;
+  font-feature-settings: "cv02", "cv03", "cv04", "cv11";
+  overflow-x: hidden;
+}
