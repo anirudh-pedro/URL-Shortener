@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
 import StatsCards from '../components/StatsCards';
 import UrlForm from '../components/UrlForm';
@@ -45,6 +46,7 @@ import useAuth from '../hooks/useAuth';
 
 const Dashboard = () => {
   const { user } = useAuth();
+  const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState('operational');
   const [urls, setUrls] = useState([]);
   const [pagination, setPagination] = useState({ totalItems: 0, totalPages: 1, currentPage: 1, limit: 10 });
@@ -707,7 +709,7 @@ const Dashboard = () => {
                 </div>
               </div>
               <div className="p-6 border-t border-slate-100 bg-slate-50 flex items-center gap-3">
-                <button type="button" onClick={() => { setDrawerOpen(false); window.location.href = `/analytics/${drawerUrl._id}`; }} className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shadow-sm transition-all text-center flex items-center justify-center gap-1.5"><FiActivity className="w-3.5 h-3.5" />Open Full Report</button>
+                <button type="button" onClick={() => { setDrawerOpen(false); navigate(`/analytics/${drawerUrl._id}`); }} className="w-full py-2.5 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shadow-sm transition-all text-center flex items-center justify-center gap-1.5"><FiActivity className="w-3.5 h-3.5" />Open Full Report</button>
               </div>
             </motion.div>
           </>
