@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 const QRCodeModal = ({ isOpen, onClose, urlItem }) => {
   if (!urlItem) return null;
 
-  const redirectBase = import.meta.env.VITE_REDIRECT_BASE || 'http://localhost:5000';
+  const redirectBase = import.meta.env.VITE_REDIRECT_BASE || 'https://url-shortener-e004.onrender.com';
   const shortUrl = `${redirectBase}/${urlItem.shortCode}`;
 
   const handleDownload = () => {

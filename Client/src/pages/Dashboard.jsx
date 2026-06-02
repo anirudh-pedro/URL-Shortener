@@ -391,7 +391,7 @@ const Dashboard = () => {
   };
 
   const getMedal = (index) => index === 0 ? '🥇' : index === 1 ? '🥈' : index === 2 ? '🥉' : `#${index + 1}`;
-  const redirectBase = import.meta.env.VITE_REDIRECT_BASE || 'http://localhost:5000';
+  const redirectBase = import.meta.env.VITE_REDIRECT_BASE || 'https://url-shortener-e004.onrender.com';
   const drawerShortUrl = drawerUrl ? `${redirectBase}/${drawerUrl.shortCode}` : '';
 
   return (

@@ -6,7 +6,7 @@ import toast from 'react-hot-toast';
 
 const UrlTable = ({ urls = [], pagination, loading, onPageChange, onShowQR, onDelete, onViewAnalytics, onFilterSelect, selectedFilterId }) => {
   const navigate = useNavigate();
-  const redirectBase = import.meta.env.VITE_REDIRECT_BASE || 'http://localhost:5000';
+  const redirectBase = import.meta.env.VITE_REDIRECT_BASE || 'https://url-shortener-e004.onrender.com';
 
   const handleCopy = (shortCode) => {
     const shortUrl = `${redirectBase}/${shortCode}`;

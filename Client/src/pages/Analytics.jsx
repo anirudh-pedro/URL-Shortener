@@ -156,7 +156,7 @@ const Analytics = () => {
     );
   }
 
-  const redirectBase = import.meta.env.VITE_REDIRECT_BASE || 'http://localhost:5000';
+  const redirectBase = import.meta.env.VITE_REDIRECT_BASE || 'https://url-shortener-e004.onrender.com';
   const shortUrl = urlDetails ? `${redirectBase}/${urlDetails.shortCode}` : '';
 
   return (
