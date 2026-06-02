@@ -143,12 +143,12 @@ const AnalyticsChart = ({ clicksByDay = [], browserData = [], deviceData = [] })
       {/* 2. Browser & Device Distributions */}
       <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
         {/* Browser Pie Chart */}
-        <div className="bg-white border border-slate-200/80 rounded-[24px] p-6 shadow-sm flex flex-col">
+        <div className="bg-white border border-slate-200/80 rounded-[24px] p-6 shadow-sm">
           <h3 className="text-[11px] font-semibold text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-[#7C3AED]"></div>
             Browser Breakdown
           </h3>
-          <div className="h-64 w-full flex-1 relative">
+          <div className="h-64 w-full relative">
             {browserData.length === 0 ? (
               <div className="h-full flex items-center justify-center text-slate-450 text-xs font-light">
                 No browser visits logged.
@@ -188,12 +188,12 @@ const AnalyticsChart = ({ clicksByDay = [], browserData = [], deviceData = [] })
         </div>
 
         {/* Device Bar Chart */}
-        <div className="bg-white border border-slate-200/80 rounded-[24px] p-6 shadow-sm flex flex-col">
+        <div className="bg-white border border-slate-200/80 rounded-[24px] p-6 shadow-sm">
           <h3 className="text-[11px] font-semibold text-slate-800 uppercase tracking-widest mb-6 flex items-center gap-2">
             <div className="w-1.5 h-1.5 rounded-full bg-[#EC4899]"></div>
             Device Distribution
           </h3>
-          <div className="h-64 w-full flex-1">
+          <div className="h-64 w-full">
             {deviceData.length === 0 ? (
               <div className="h-full flex items-center justify-center text-slate-450 text-xs font-light">
                 No device visits logged.
