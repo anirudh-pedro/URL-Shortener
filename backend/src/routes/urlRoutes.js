@@ -1,6 +1,6 @@
 import express from 'express';
 import { body } from 'express-validator';
-import { createShortUrl, getUserUrls, getUrlById, deleteUrl } from '../controllers/urlController.js';
+import { createShortUrl, getUserUrls, getUrlById, deleteUrl, updateUrl, bulkCreateUrls } from '../controllers/urlController.js';
 import protect from '../middleware/authMiddleware.js';
 import validateRequest from '../middleware/validateRequest.js';
 
@@ -146,6 +146,93 @@ router.get('/:id', getUrlById);
  *       401:
  *         description: Unauthorized
  */
+/**
+ * @swagger
+ * /api/urls/{id}:
+ *   put:
+ *     summary: Update destination URL
+ *     tags: [URLs]
+ *     security:
+ *       - bearerAuth: []
+ *     parameters:
+ *       - in: path
+ *         name: id
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The URL database ID
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - originalUrl
+ *             properties:
+ *               originalUrl:
+ *                 type: string
+ *                 example: https://newdestination.com
+ *     responses:
+ *       200:
+ *         description: URL updated successfully
+ *       404:
+ *         description: URL not found
+ *       401:
+ *         description: Unauthorized
+ */
+router.put(
+  '/:id',
+  [
+    body('originalUrl')
+      .trim()
+      .notEmpty()
+      .withMessage('Original URL is required')
+      .isURL()
+      .withMessage('Please provide a valid URL'),
+  ],
+  validateRequest,
+  updateUrl
+);
+
+/**
+ * @swagger
+ * /api/urls/bulk:
+ *   post:
+ *     summary: Bulk create shortened URLs
+ *     tags: [URLs]
+ *     security:
+ *       - bearerAuth: []
+ *     requestBody:
+ *       required: true
+ *       content:
+ *         application/json:
+ *           schema:
+ *             type: object
+ *             required:
+ *               - urlsList
+ *             properties:
+ *               urlsList:
+ *                 type: array
+ *                 items:
+ *                   type: object
+ *                   required:
+ *                     - originalUrl
+ *                   properties:
+ *                     originalUrl:
+ *                       type: string
+ *                     customAlias:
+ *                       type: string
+ *                     expiryDate:
+ *                       type: string
+ *     responses:
+ *       201:
+ *         description: Bulk URLs created successfully
+ *       401:
+ *         description: Unauthorized
+ */
+router.post('/bulk', bulkCreateUrls);
+
 router.delete('/:id', deleteUrl);
 
 export default router;

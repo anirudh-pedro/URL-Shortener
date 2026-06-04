@@ -8,6 +8,7 @@ import Register from './pages/Register';
 import Dashboard from './pages/Dashboard';
 import Analytics from './pages/Analytics';
 import Landing from './pages/Landing';
+import PublicStats from './pages/PublicStats';
 
 function App() {
   return (
@@ -18,6 +19,7 @@ function App() {
           <Route path="/" element={<Landing />} />
           <Route path="/login" element={<Login />} />
           <Route path="/register" element={<Register />} />
+          <Route path="/stats/:shortCode" element={<PublicStats />} />
 
           {/* Private dashboard layout routes */}
           <Route element={<DashboardLayout />}>

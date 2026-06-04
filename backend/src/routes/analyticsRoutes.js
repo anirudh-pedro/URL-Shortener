@@ -1,5 +1,5 @@
 import express from 'express';
-import { getUrlAnalytics } from '../controllers/analyticsController.js';
+import { getUrlAnalytics, getPublicUrlAnalytics } from '../controllers/analyticsController.js';
 import { generateMockTraffic } from '../controllers/mockController.js';
 import protect from '../middleware/authMiddleware.js';
 
@@ -66,5 +66,26 @@ router.get('/:urlId', protect, getUrlAnalytics);
  *         description: Unauthorized
  */
 router.post('/:urlId/mock', protect, generateMockTraffic);
+
+/**
+ * @swagger
+ * /api/analytics/public/{shortCode}:
+ *   get:
+ *     summary: Retrieve public click and visitor analytics for a URL by short code
+ *     tags: [Analytics]
+ *     parameters:
+ *       - in: path
+ *         name: shortCode
+ *         required: true
+ *         schema:
+ *           type: string
+ *         description: The shortened URL slug
+ *     responses:
+ *       200:
+ *         description: Public analytics retrieved successfully
+ *       404:
+ *         description: URL not found
+ */
+router.get('/public/:shortCode', getPublicUrlAnalytics);
 
 export default router;

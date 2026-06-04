@@ -207,3 +207,88 @@ export const redirectToOriginalUrl = async (req, res, next) => {
     next(error);
   }
 };
+
+// @desc    Update destination URL (Edit URL)
+// @route   PUT /api/urls/:id
+// @access  Private
+export const updateUrl = async (req, res, next) => {
+  const { originalUrl } = req.body;
+  const { id } = req.params;
+  const userId = req.user._id;
+
+  try {
+    const url = await Url.findOne({ _id: id, userId });
+    if (!url) {
+      return errorResponse(res, 'URL not found or unauthorized access', 404);
+    }
+
+    url.originalUrl = originalUrl;
+    await url.save();
+
+    return successResponse(res, url, 'Destination URL updated successfully');
+  } catch (error) {
+    next(error);
+  }
+};
+
+// @desc    Bulk create shortened URLs
+// @route   POST /api/urls/bulk
+// @access  Private
+export const bulkCreateUrls = async (req, res, next) => {
+  const { urlsList } = req.body; // array of { originalUrl, customAlias, expiryDate }
+  const userId = req.user._id;
+
+  try {
+    if (!Array.isArray(urlsList) || urlsList.length === 0) {
+      return errorResponse(res, 'Please provide a list of URLs to shorten', 400);
+    }
+
+    const createdUrls = [];
+    const baseUrl = process.env.BASE_URL || `${req.protocol}://${req.get('host')}`;
+
+    for (const item of urlsList) {
+      const { originalUrl, customAlias, expiryDate } = item;
+
+      // Basic validation
+      if (!originalUrl || !/^https?:\/\/\S+/i.test(originalUrl)) {
+        continue; // skip invalid URLs
+      }
+
+      let shortCode;
+      if (customAlias) {
+        // Validate custom alias format
+        const aliasRegex = /^[a-zA-Z0-9_-]+$/;
+        if (!aliasRegex.test(customAlias)) continue;
+        const existingAlias = await Url.findOne({ shortCode: customAlias });
+        if (existingAlias) continue;
+        shortCode = customAlias;
+      } else {
+        shortCode = await generateUniqueCode(7);
+      }
+
+      const shortUrl = `${baseUrl}/${shortCode}`;
+      const qrCodeUrl = await QRCode.toDataURL(shortUrl);
+
+      const urlDoc = await Url.create({
+        userId,
+        originalUrl,
+        shortCode,
+        customAlias: customAlias || null,
+        qrCodeUrl,
+        expiryDate: expiryDate ? new Date(expiryDate) : null,
+      });
+
+      createdUrls.push({
+        _id: urlDoc._id,
+        originalUrl: urlDoc.originalUrl,
+        shortCode: urlDoc.shortCode,
+        shortUrl,
+        createdAt: urlDoc.createdAt,
+      });
+    }
+
+    return successResponse(res, createdUrls, `Successfully shortened ${createdUrls.length} URLs in bulk`, 201);
+  } catch (error) {
+    next(error);
+  }
+};

@@ -27,7 +27,8 @@ import {
   FiX,
   FiCalendar,
   FiMousePointer,
-  FiFilter
+  FiFilter,
+  FiShare2
 } from 'react-icons/fi';
 import { BsQrCode } from 'react-icons/bs';
 import {
@@ -53,6 +54,11 @@ const Dashboard = () => {
   const [loading, setLoading] = useState(true);
   const [submitting, setSubmitting] = useState(false);
   const [currentPage, setCurrentPage] = useState(1);
+
+  const [editModalOpen, setEditModalOpen] = useState(false);
+  const [editingUrl, setEditingUrl] = useState(null);
+  const [editOriginalUrl, setEditOriginalUrl] = useState('');
+  const [editSubmitting, setEditSubmitting] = useState(false);
 
   const [qrModalOpen, setQrModalOpen] = useState(false);
   const [activeQrItem, setActiveQrItem] = useState(null);
@@ -299,6 +305,58 @@ const Dashboard = () => {
     }
   };
 
+  const handleBulkCreate = async (urlsList, resetBulkFormCallback) => {
+    setSubmitting(true);
+    try {
+      const res = await api.post('/urls/bulk', { urlsList });
+      if (res.data && res.data.success) {
+        toast.success(res.data.message || `Successfully shortened ${res.data.data.length} URLs!`);
+        resetBulkFormCallback();
+        await fetchDashboardData(1);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to shorten bulk URLs');
+    } finally {
+      setSubmitting(false);
+    }
+  };
+
+  const handleOpenEditModal = (urlItem) => {
+    setEditingUrl(urlItem);
+    setEditOriginalUrl(urlItem.originalUrl);
+    setEditModalOpen(true);
+  };
+
+  const handleEditUrlSubmit = async (e) => {
+    e.preventDefault();
+    if (!editOriginalUrl) {
+      toast.error('Destination URL is required');
+      return;
+    }
+    try {
+      new URL(editOriginalUrl);
+    } catch (_) {
+      toast.error('Please enter a valid absolute URL (including http:// or https://)');
+      return;
+    }
+
+    setEditSubmitting(true);
+    try {
+      const res = await api.put(`/urls/${editingUrl._id}`, { originalUrl: editOriginalUrl });
+      if (res.data && res.data.success) {
+        toast.success('Destination URL updated successfully');
+        setEditModalOpen(false);
+        setEditingUrl(null);
+        setEditOriginalUrl('');
+        await fetchDashboardData(currentPage);
+      }
+    } catch (error) {
+      toast.error(error.response?.data?.message || 'Failed to update destination URL');
+    } finally {
+      setEditSubmitting(false);
+    }
+  };
+
   const handleDeleteUrl = async (id) => {
     if (!window.confirm('Delete this short link? Associated visitor logs will be lost.')) return;
     try {
@@ -444,7 +502,7 @@ const Dashboard = () => {
               </div>
             </div>
             <StatsCards stats={stats} loading={loading} />
-            <UrlForm onSubmit={handleCreateUrl} submitting={submitting} />
+            <UrlForm onSubmit={handleCreateUrl} onBulkSubmit={handleBulkCreate} submitting={submitting} />
             <div className="grid grid-cols-1 xl:grid-cols-3 gap-8">
               <div className="xl:col-span-2 space-y-6">
                 {selectedUrlFilter && (
@@ -470,6 +528,7 @@ const Dashboard = () => {
                   loading={loading} 
                   onPageChange={handlePageChange} 
                   onShowQR={handleShowQR} 
+                  onEdit={handleOpenEditModal}
                   onDelete={handleDeleteUrl} 
                   onViewAnalytics={handleOpenDrawer} 
                   onFilterSelect={setSelectedUrlFilter}
@@ -632,6 +691,80 @@ const Dashboard = () => {
 
       <QRCodeModal isOpen={qrModalOpen} onClose={() => { setQrModalOpen(false); setActiveQrItem(null); }} urlItem={activeQrItem} />
 
+      {/* Edit Destination URL Modal */}
+      <AnimatePresence>
+        {editModalOpen && editingUrl && (
+          <div className="fixed inset-0 z-50 flex items-center justify-center p-4">
+            {/* Backdrop */}
+            <motion.div
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              exit={{ opacity: 0 }}
+              onClick={() => { setEditModalOpen(false); setEditingUrl(null); }}
+              className="fixed inset-0 bg-slate-950/40 backdrop-blur-sm"
+            />
+
+            {/* Modal Container */}
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9, y: 15 }}
+              animate={{ opacity: 1, scale: 1, y: 0 }}
+              exit={{ opacity: 0, scale: 0.9, y: 15 }}
+              transition={{ duration: 0.35, ease: [0.16, 1, 0.3, 1] }}
+              className="w-full max-w-md rounded-[24px] bg-white border border-slate-200 p-6 relative shadow-xl z-10"
+            >
+              {/* Close Button */}
+              <button
+                onClick={() => { setEditModalOpen(false); setEditingUrl(null); }}
+                className="absolute top-4 right-4 p-1.5 text-slate-400 hover:text-slate-600 hover:bg-slate-50 rounded-xl transition-colors"
+              >
+                <FiX className="w-5 h-5" />
+              </button>
+
+              {/* Modal Header */}
+              <div className="text-center mb-6">
+                <h3 className="text-xs font-semibold text-slate-800 uppercase tracking-widest">Edit Destination URL</h3>
+                <p className="text-xs text-slate-500 mt-1 truncate">Short Code: /{editingUrl.shortCode}</p>
+              </div>
+
+              {/* Edit Form */}
+              <form onSubmit={handleEditUrlSubmit} className="space-y-4">
+                <div>
+                  <label className="block text-[10px] font-semibold text-slate-500 uppercase tracking-widest mb-2">
+                    Original Destination URL *
+                  </label>
+                  <input
+                    type="text"
+                    value={editOriginalUrl}
+                    onChange={(e) => setEditOriginalUrl(e.target.value)}
+                    className="w-full px-4 py-2.5 rounded-xl bg-slate-50 border border-slate-200 focus:border-slate-400 focus:ring-1 focus:ring-slate-400 text-sm text-slate-850 placeholder-slate-400 focus:outline-none transition-all duration-300"
+                    placeholder="https://example.com/long-original-url"
+                    required
+                  />
+                </div>
+
+                <div className="flex items-center gap-3 pt-2 justify-end">
+                  <button
+                    type="button"
+                    onClick={() => { setEditModalOpen(false); setEditingUrl(null); }}
+                    className="px-4 py-2.5 rounded-xl border border-slate-200 hover:border-slate-300 text-slate-600 hover:bg-slate-50 text-sm font-medium transition-all"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    type="submit"
+                    disabled={editSubmitting}
+                    className="flex items-center gap-2 px-5 py-2.5 rounded-xl bg-slate-900 text-white hover:bg-slate-800 text-sm font-semibold shadow-sm transition-all disabled:opacity-50"
+                  >
+                    {editSubmitting ? 'Updating...' : 'Update Destination'}
+                  </button>
+                </div>
+              </form>
+            </motion.div>
+          </div>
+        )}
+      </AnimatePresence>
+
       <AnimatePresence>
         {drawerOpen && drawerUrl && (
           <>
@@ -660,6 +793,22 @@ const Dashboard = () => {
                       <div className="grid grid-cols-2 gap-4">
                         <div className="bg-slate-50/50 border border-slate-200/80 p-4 rounded-2xl flex items-center justify-between"><div><span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider block">Clicks</span><span className="text-xl font-bold text-slate-900 mt-1 block">{drawerAnalytics.totalClicks}</span></div><div className="p-2 rounded-xl bg-violet-50 text-violet-600 border border-violet-100"><FiMousePointer className="w-4 h-4" /></div></div>
                         <div className="bg-slate-50/50 border border-slate-200/80 p-4 rounded-2xl flex items-center justify-between"><div><span className="text-[9px] font-semibold text-slate-400 uppercase tracking-wider block">Coverage</span><span className="text-xl font-bold text-slate-900 mt-1 block">{drawerAnalytics.recentVisits.length} logs</span></div><div className="p-2 rounded-xl bg-cyan-50 text-cyan-600 border border-cyan-100"><FiMonitor className="w-4 h-4" /></div></div>
+                      </div>
+                      <div className="bg-violet-50/30 border border-violet-100 p-4 rounded-2xl flex items-center justify-between">
+                        <div>
+                          <span className="text-[9px] font-semibold text-violet-650 uppercase tracking-wider block">Public Stats Page</span>
+                          <span className="text-xs font-bold text-slate-800 mt-0.5 block">Share real-time click analytics</span>
+                        </div>
+                        <button
+                          type="button"
+                          onClick={() => {
+                            navigator.clipboard.writeText(`${window.location.origin}/stats/${drawerUrl.shortCode}`);
+                            toast.success('Public stats link copied to clipboard!');
+                          }}
+                          className="px-3.5 py-2 bg-slate-900 hover:bg-slate-800 text-white rounded-xl text-xs font-semibold shadow-sm transition-all flex items-center gap-1.5 active:scale-[0.98]"
+                        >
+                          <FiShare2 className="w-3.5 h-3.5" /> Share Stats
+                        </button>
                       </div>
                       <div className="bg-white border border-slate-200/80 p-4 rounded-2xl">
                         <span className="text-[9px] font-semibold text-slate-450 uppercase tracking-wider block mb-4">Click Trend (Last 7 Days)</span>

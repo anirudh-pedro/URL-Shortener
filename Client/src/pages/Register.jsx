@@ -13,8 +13,24 @@ const Register = () => {
   const [password, setPassword] = useState('');
   const [submitting, setSubmitting] = useState(false);
 
+  // loading session recovering indicators
+  if (loading) {
+    return (
+      <div className="min-h-screen bg-[#F8FAFC] text-[#0F172A] flex items-center justify-center relative overflow-hidden">
+        {/* Glow effects */}
+        <div className="absolute top-1/4 left-1/4 w-96 h-96 bg-violet-600/5 rounded-full blur-[120px] pointer-events-none"></div>
+        <div className="absolute bottom-1/4 right-1/4 w-96 h-96 bg-cyan-500/5 rounded-full blur-[120px] pointer-events-none"></div>
+
+        <div className="flex flex-col items-center gap-4 relative z-10">
+          <div className="w-8 h-8 border-2 border-violet-500 border-t-transparent rounded-full animate-spin"></div>
+          <p className="text-slate-500 text-xs font-medium tracking-widest uppercase">Securing connection...</p>
+        </div>
+      </div>
+    );
+  }
+
   // If already authenticated, redirect straight to dashboard
-  if (!loading && isAuthenticated) {
+  if (isAuthenticated) {
     return <Navigate to="/dashboard" replace />;
   }
 

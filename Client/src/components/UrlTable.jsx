@@ -1,10 +1,10 @@
 import React from 'react';
 import { useNavigate } from 'react-router-dom';
-import { FiCopy, FiBarChart2, FiTrash2, FiExternalLink, FiChevronLeft, FiChevronRight, FiLink, FiFilter } from 'react-icons/fi';
+import { FiCopy, FiBarChart2, FiTrash2, FiExternalLink, FiChevronLeft, FiChevronRight, FiLink, FiFilter, FiEdit2 } from 'react-icons/fi';
 import { BsQrCode } from 'react-icons/bs';
 import toast from 'react-hot-toast';
 
-const UrlTable = ({ urls = [], pagination, loading, onPageChange, onShowQR, onDelete, onViewAnalytics, onFilterSelect, selectedFilterId }) => {
+const UrlTable = ({ urls = [], pagination, loading, onPageChange, onShowQR, onEdit, onDelete, onViewAnalytics, onFilterSelect, selectedFilterId }) => {
   const navigate = useNavigate();
   const redirectBase = import.meta.env.VITE_REDIRECT_BASE || 'https://url-shortener-e004.onrender.com';
 
@@ -179,6 +179,13 @@ const UrlTable = ({ urls = [], pagination, loading, onPageChange, onShowQR, onDe
                           className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 border border-transparent hover:border-slate-200 transition-all duration-250"
                         >
                           <BsQrCode className="w-4 h-4" />
+                        </button>
+                        <button
+                          onClick={() => onEdit && onEdit(url)}
+                          title="Edit Destination URL"
+                          className="p-1.5 rounded-lg text-slate-500 hover:text-slate-900 hover:bg-slate-100 border border-transparent hover:border-slate-200 transition-all duration-250"
+                        >
+                          <FiEdit2 className="w-4 h-4" />
                         </button>
                         <button
                           onClick={() => onDelete(url._id)}

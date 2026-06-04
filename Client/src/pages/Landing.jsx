@@ -7,7 +7,7 @@ import useAuth from '../hooks/useAuth';
 import toast from 'react-hot-toast';
 
 const Landing = () => {
-  const { isAuthenticated } = useAuth();
+  const { isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
   const [url, setUrl] = useState('');
 
@@ -76,7 +76,9 @@ const Landing = () => {
           </nav>
 
           <div className="flex items-center gap-3">
-            {isAuthenticated ? (
+            {loading ? (
+              <div className="w-5 h-5 border-2 border-slate-900 border-t-transparent rounded-full animate-spin"></div>
+            ) : isAuthenticated ? (
               <Link
                 to="/dashboard"
                 className="px-4 py-2 text-xs font-semibold bg-slate-900 text-white rounded-xl hover:bg-slate-800 transition-all shadow-sm"
