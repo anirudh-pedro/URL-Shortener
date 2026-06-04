@@ -6,6 +6,27 @@ Designed with a premium, responsive **Light SaaS Aesthetic**, it leverages seaml
 
 ---
 
+## 🧠 Problem Approach & Planning
+
+### 1. Problem Statement & Scope Analysis
+The primary goal is to build a full-stack URL shortener that simplifies sharing while delivering rich user analytics. The system must handle:
+* **Unique Code Generation**: Generating unique short slugs while supporting custom vanity aliases.
+* **Redirection Performance**: Emitting quick HTTP redirections (status `302 Found`) while capturing visitor metadata.
+* **Real-time Analytics**: Aggregating page views, click rates over time, device profiles, and browser demographics without degrading lookup performance.
+* **Privacy Compliance**: Disseminating public stats without exposing sensitive data (e.g., visitor IP addresses and full user agents).
+
+### 2. Technical Approach & Design Decisions
+* **Database Modeling**: We utilize Mongoose with two core collections: `Url` (mapping slugs to destination targets and click counters) and `Visit` (tracking each redirect transaction). The `Url` collection uses unique indexes on `shortCode` to optimize lookup queries.
+* **Concurrency & Aggregation**: To avoid race conditions in multi-user environments, link click counters are incremented atomically using MongoDB's `$inc` operator. Daily click trend graphs are aggregated using MongoDB's `$group` pipeline, calculating time series metrics across day intervals efficiently.
+* **Frontend State Synchronization**: To create a highly responsive experience, the dashboard uses React context for auth state tracking, and local state management for the inline filters. Single link drilldowns dynamically filter click trends, browser distributions, and recent log lists globally across the workspace.
+
+### 3. Execution & Implementation Roadmap
+* **Phase 1: Foundation (Auth & Redirection)**: Designed user session tokens (JWT) and built the core router resolving shortcode parameters to destination redirects while creating log entries.
+* **Phase 2: Analytics & Dashboard**: Integrated Recharts in the React frontend, created donut charts for browser/device distributions, and added the access log lists.
+* **Phase 3: Extended Features (CSV, Editing, Public Stats)**: Built bulk file upload parser on the client, enabled target editing for existing slugs, and established the unauthenticated public stats route utilizing IP/User-Agent masking projection.
+
+---
+
 ## 🗺️ Application Architecture
 
 ```mermaid
@@ -116,17 +137,6 @@ graph TD
 ---
 
 ## 📊 Sample Output and Logs
-
-### 📸 Application Interface Screenshots
-Here are screenshots showing the landing page, dashboard console, analytics, and responsive mobile views:
-
-| Landing Page Interface | Operational Dashboard Hub |
-| :---: | :---: |
-| ![Landing Page](./screenshots/media__1780390467318.png) | ![Dashboard](./screenshots/media__1780390531366.png) |
-
-| Global Analytics Chart Hub | Mobile Responsive Drawer View |
-| :---: | :---: |
-| ![Analytics Dashboard](./screenshots/media__1780393555530.png) | ![Mobile Drawer](./screenshots/media__1780394803211.png) |
 
 ### Standard Access Log Example (`logs/access.log`)
 ```
