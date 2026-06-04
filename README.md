@@ -117,6 +117,17 @@ graph TD
 
 ## 📊 Sample Output and Logs
 
+### 📸 Application Interface Screenshots
+Here are screenshots showing the landing page, dashboard console, analytics, and responsive mobile views:
+
+| Landing Page Interface | Operational Dashboard Hub |
+| :---: | :---: |
+| ![Landing Page](./screenshots/media__1780390467318.png) | ![Dashboard](./screenshots/media__1780390531366.png) |
+
+| Global Analytics Chart Hub | Mobile Responsive Drawer View |
+| :---: | :---: |
+| ![Analytics Dashboard](./screenshots/media__1780393555530.png) | ![Mobile Drawer](./screenshots/media__1780394803211.png) |
+
 ### Standard Access Log Example (`logs/access.log`)
 ```
 ::1 - - [04/Jun/2026:08:44:12 +0530] "GET /google-search HTTP/1.1" 302 - "-" "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/125.0.0.0 Safari/537.36"
