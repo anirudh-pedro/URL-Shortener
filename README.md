@@ -111,7 +111,7 @@ graph TD
 ---
 
 ## 📺 Video Explanation & Demonstration
-* [Click here to watch the Loom / YouTube explanation video](https://www.youtube.com/watch?v=dQw4w9WgXcQ) *(Please replace this link with your actual Loom/YouTube URL before final submission)*
+* [Click here to watch the Loom explanation video](https://www.loom.com/share/0db91a41925041ba87110262badeae70)
 
 ---
 
