@@ -15,7 +15,6 @@ const assert = (condition, message) => {
 const runTests = async () => {
   console.log('Starting integration tests...');
   
-  // 1. Connect DB and start server on test port 5001
   await connectDB();
   const server = app.listen(PORT, async () => {
     console.log(`Test server running on port ${PORT}`);
@@ -33,7 +32,6 @@ const runTests = async () => {
       let urlId = '';
       let shortCode = '';
 
-      // --- TEST REGISTER ---
       console.log('\n--- Testing User Registration ---');
       const regRes = await fetch(`${baseUrl}/api/auth/register`, {
         method: 'POST',
